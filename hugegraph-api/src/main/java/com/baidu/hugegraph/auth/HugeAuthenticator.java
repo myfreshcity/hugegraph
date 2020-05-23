@@ -265,6 +265,7 @@ public interface HugeAuthenticator extends Authenticator {
 
         private boolean matchPermission(String owner,
                                         Set<HugePermission> actions) {
+            // It's OK if owner and action are matched
             if (owner == null) {
                 return true;
             }
@@ -288,6 +289,12 @@ public interface HugeAuthenticator extends Authenticator {
         private boolean matchResource(HugePermission required,
                                       ResourceObject<?> resourceObject) {
             E.checkNotNull(resourceObject, "resource object");
+
+            // Is resource allowed to access by anyone
+            if (HugeResource.allowed(resourceObject)) {
+                return true;
+            }
+
             String owner = resourceObject.graph();
             Map<HugePermission, Object> permissions = this.roles.get(owner);
             if (permissions == null) {
@@ -437,7 +444,8 @@ public interface HugeAuthenticator extends Authenticator {
             if (0 < offset && ++offset < action.length()) {
                 /*
                  * In order to be compatible with the old permission mechanism,
-                 * here is only to provide pre-control.
+                 * here is only to provide pre-control by extract the suffix of
+                 * action {vertex/edge/schema}_{read/write} like vertex_read.
                  */
                 action = action.substring(offset);
             }

@@ -44,7 +44,7 @@ public class RolePermissionTest {
     @Test
     public void testBuiltinAdmin() {
         RolePermission admin = RolePermission.admin();
-        RolePermission role1 = RolePermission.role("admin", HugePermission.ALL);
+        RolePermission role1 = RolePermission.role("admin", HugePermission.ANY);
         Assert.assertEquals(admin, role1);
         Assert.assertSame(admin, RolePermission.builtin(admin));
         Assert.assertSame(admin, RolePermission.builtin(role1));
